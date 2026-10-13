@@ -1,0 +1,122 @@
+// Modelo de dados do MVP do Nexo Mangue (Trello: I3 — Banco/API: modelos Prisma)
+
+generator client {
+  provider        = "prisma-client-js"
+  // "client" = Prisma sem o binário Rust (usa o driver adapter do pg). Padrão a partir do Prisma 7.
+  engineType      = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STARTUP
+  MENTOR
+  INVESTOR
+  ADMIN
+}
+
+/// Estágio de maturidade da startup, em ordem crescente (usado no critério "Estágio" do match)
+enum Stage {
+  IDEACAO
+  VALIDACAO
+  MVP
+  TRACAO
+  ESCALA
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role
+  /// Data do consentimento LGPD (obrigatório no cadastro)
+  consentAt    DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  startup  StartupProfile?
+  mentor   MentorProfile?
+  investor InvestorProfile?
+
+  interestsSent     ConnectionInterest[] @relation("InterestFrom")
+  interestsReceived ConnectionInterest[] @relation("InterestTo")
+  auditLogs         AuditLog[]
+}
+
+model StartupProfile {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName  String
+  description  String?
+  sectors      String[]
+  stage        Stage
+  /// Valor que a startup busca captar, em reais
+  ticketNeeded Int?
+  city         String
+  state        String   @db.Char(2)
+  impactAreas  String[]
+  /// O que a startup procura: ex. "mentoria em vendas", "investimento seed"
+  needs        String[]
+  updatedAt    DateTime @updatedAt
+}
+
+model MentorProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  headline    String?
+  sectors     String[]
+  /// Estágios de startup que o mentor prefere acompanhar
+  stages      Stage[]
+  expertise   String[]
+  city        String
+  state       String   @db.Char(2)
+  impactAreas String[]
+  updatedAt   DateTime @updatedAt
+}
+
+model InvestorProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  thesis      String?
+  sectors     String[]
+  stages      Stage[]
+  ticketMin   Int
+  ticketMax   Int
+  city        String
+  state       String   @db.Char(2)
+  impactAreas String[]
+  updatedAt   DateTime @updatedAt
+}
+
+/// Interesse de um usuário em outro. Quando existe nos dois sentidos, o contato é liberado.
+model ConnectionInterest {
+  id         String   @id @default(uuid())
+  fromUserId String
+  toUserId   String
+  from       User     @relation("InterestFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  to         User     @relation("InterestTo", fields: [toUserId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([fromUserId, toUserId])
+  @@index([toUserId])
+}
+
+/// Registro das ações importantes (slide 8: segurança e limites)
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String?
+  entityId  String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
