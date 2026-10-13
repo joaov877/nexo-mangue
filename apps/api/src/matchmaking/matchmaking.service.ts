@@ -22,6 +22,17 @@ export interface Recommendation extends MatchScore {
   city: string;
   state: string;
   interestSent: boolean;
+  description?: string | null;
+  stage?: StageValue;
+  ticketNeeded?: number | null;
+  needs?: string[];
+  impactAreas?: string[];
+  headline?: string | null;
+  expertise?: string[];
+  thesis?: string | null;
+  stages?: StageValue[];
+  ticketMin?: number | null;
+  ticketMax?: number | null;
 }
 
 const toCounterpart = (p: MentorProfile | InvestorProfile, kind: 'MENTOR' | 'INVESTOR'): CounterpartInput => ({
@@ -37,8 +48,12 @@ const toCounterpart = (p: MentorProfile | InvestorProfile, kind: 'MENTOR' | 'INV
 
 const toStartup = (p: StartupProfile) => ({ ...p, stage: p.stage as StageValue });
 
-const hasSector = (sectors: string[], wanted?: string) =>
-  !wanted || sectors.some((s) => s.toLowerCase() === wanted.toLowerCase());
+const normalizeSector = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+const hasSector = (sectors: string[], wanted?: string) => {
+  if (!wanted?.trim()) return true;
+  const query = normalizeSector(wanted);
+  return sectors.some((sector) => normalizeSector(sector).includes(query));
+};
 
 /**
  * Gera recomendações ranqueadas para o usuário logado.
@@ -90,6 +105,13 @@ export class MatchmakingService {
       city: p.city,
       state: p.state,
       interestSent: sentIds.has(p.userId),
+      headline: 'headline' in p ? p.headline : null,
+      expertise: 'expertise' in p ? p.expertise : [],
+      thesis: 'thesis' in p ? p.thesis : null,
+      stages: p.stages as StageValue[],
+      ticketMin: 'ticketMin' in p ? p.ticketMin : null,
+      ticketMax: 'ticketMax' in p ? p.ticketMax : null,
+      impactAreas: p.impactAreas,
       ...scoreMatch(startup, toCounterpart(p, kind)),
     });
 
@@ -123,6 +145,11 @@ export class MatchmakingService {
         city: s.city,
         state: s.state,
         interestSent: sentIds.has(s.userId),
+        description: s.description,
+        stage: s.stage as StageValue,
+        ticketNeeded: s.ticketNeeded,
+        needs: s.needs,
+        impactAreas: s.impactAreas,
         ...scoreMatch(toStartup(s), counterpart),
       }));
   }

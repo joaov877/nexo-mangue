@@ -6,6 +6,8 @@ export interface Session { accessToken: string; user: User; }
 export interface Recommendation {
   userId: string; name: string; kind: 'STARTUP' | 'MENTOR' | 'INVESTOR'; title: string | null;
   sectors: string[]; city: string; state: string; score: number; highlights: string[]; interestSent: boolean;
+  description?: string | null; stage?: Stage; ticketNeeded?: number | null; needs?: string[]; impactAreas?: string[];
+  headline?: string | null; expertise?: string[]; thesis?: string | null; stages?: Stage[]; ticketMin?: number | null; ticketMax?: number | null;
 }
 export interface Profile {
   id?: string; userId?: string; companyName?: string; description?: string; sectors: string[];
