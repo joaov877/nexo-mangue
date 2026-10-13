@@ -1,0 +1,116 @@
+/* Identidade visual do Nexo Mangue (mesma paleta da apresentação) */
+:root {
+  --brown: #4a2b02;
+  --brown-2: #6b4a1f;
+  --amber: #fbad14;
+  --amber-deep: #c98a00;
+  --cream: #fff5df;
+  --paper: #fffbf2;
+  --ink: #2b1a03;
+  --muted: #7a6649;
+  --line: #ecdcbc;
+  --danger: #b3261e;
+  --ok: #2e7d4f;
+  --radius: 14px;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); }
+h1, h2, .logo, .brand-claim { font-family: 'Montserrat', 'Inter', sans-serif; font-weight: 500; }
+.muted { color: var(--muted); }
+.center { min-height: 100vh; display: grid; place-items: center; }
+
+/* Logo */
+.logo { display: inline-flex; align-items: center; gap: 10px; font-size: 1.15rem; }
+.logo b { color: var(--amber); font-weight: 500; }
+.logo-mark {
+  width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center;
+  background: var(--amber); color: var(--brown); font-weight: 700;
+}
+
+/* Telas de login e cadastro */
+.auth { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+.auth-brand {
+  background: var(--brown); color: var(--cream); padding: 48px;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 32px;
+}
+.auth-brand .logo { color: var(--cream); }
+.brand-claim { font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.25; margin: 0 0 16px; max-width: 16ch; }
+.brand-claim em { font-style: normal; color: var(--amber); }
+.brand-sub { opacity: 0.8; max-width: 38ch; line-height: 1.5; margin: 0; }
+.brand-foot { font-size: 0.8rem; opacity: 0.6; }
+.auth-main { display: grid; place-items: center; padding: 40px 16px; }
+.auth-card { width: 100%; max-width: 420px; }
+.auth-card h1 { margin: 0 0 6px; font-size: 1.8rem; }
+.switch { margin-top: 20px; color: var(--muted); }
+.switch a { color: var(--brown); font-weight: 600; }
+
+.form { display: grid; gap: 16px; margin-top: 24px; }
+.form label { display: grid; gap: 6px; font-size: 0.9rem; font-weight: 500; }
+.form input[type='email'], .form input[type='password'], .form input:not([type]) {
+  font: inherit; padding: 11px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff;
+}
+.form input:focus-visible { outline: 2px solid var(--amber); outline-offset: 1px; border-color: var(--amber); }
+.form small { font-weight: 400; }
+
+.roles { border: 0; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.roles legend { font-size: 0.9rem; font-weight: 500; margin-bottom: 6px; }
+.role {
+  border: 1px solid var(--line); border-radius: 12px; padding: 12px; cursor: pointer; background: #fff;
+  display: grid !important; gap: 4px !important; align-content: start;
+}
+.role input { position: absolute; opacity: 0; pointer-events: none; }
+.role span { font-weight: 400; font-size: 0.78rem; color: var(--muted); line-height: 1.3; }
+.role.selected { border-color: var(--amber); background: var(--cream); box-shadow: inset 0 0 0 1px var(--amber); }
+.role:has(input:focus-visible) { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+.consent { grid-template-columns: auto 1fr; align-items: start; font-weight: 400 !important; font-size: 0.82rem !important; color: var(--muted); }
+.consent input { margin-top: 3px; accent-color: var(--brown); }
+
+.btn {
+  font: inherit; font-weight: 600; border: 0; border-radius: 10px; padding: 12px 18px; cursor: pointer;
+  background: var(--brown); color: var(--cream);
+}
+.btn:hover:not(:disabled) { background: var(--brown-2); }
+.btn:disabled { opacity: 0.55; cursor: default; }
+.btn-small { padding: 8px 14px; font-size: 0.85rem; justify-self: start; }
+.btn-ghost { font: inherit; background: none; border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; cursor: pointer; color: var(--ink); }
+
+.error { margin: 0; color: var(--danger); font-size: 0.88rem; }
+.success, .notice { padding: 12px 14px; border-radius: 10px; }
+.success { background: #e7f4ec; color: var(--ok); }
+.notice { background: var(--cream); border: 1px solid var(--line); }
+
+/* Início */
+.topbar { display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; background: var(--brown); color: var(--cream); }
+.topbar .muted { color: #d9c7a5; }
+.topbar .btn-ghost { color: var(--cream); border-color: #7a5a2c; }
+.topbar-user { display: flex; align-items: center; gap: 14px; font-size: 0.9rem; }
+.content { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; }
+.content h1 { margin-bottom: 4px; }
+
+.cards { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: grid; gap: 10px; align-content: start; }
+.card-head { display: flex; justify-content: space-between; gap: 12px; }
+.card h2 { font-size: 1.1rem; margin: 6px 0 2px; }
+.card-head p { margin: 0; font-size: 0.85rem; }
+.tag { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--amber-deep); }
+.score { text-align: right; white-space: nowrap; }
+.score strong { font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 500; }
+.score span { color: var(--muted); font-size: 0.8rem; }
+.bar { height: 6px; background: var(--cream); border-radius: 99px; overflow: hidden; }
+.bar span { display: block; height: 100%; background: var(--amber); border-radius: 99px; }
+.why { margin: 4px 0 0; font-weight: 600; font-size: 0.85rem; }
+.reasons { margin: 0; padding-left: 18px; font-size: 0.85rem; color: var(--muted); display: grid; gap: 3px; }
+
+@media (max-width: 800px) {
+  .auth { grid-template-columns: 1fr; }
+  .auth-brand { padding: 28px 16px; }
+  .brand-claim { font-size: 1.4rem; }
+  .brand-foot { display: none; }
+  .roles { grid-template-columns: 1fr; }
+  .topbar { padding: 14px 16px; }
+}
