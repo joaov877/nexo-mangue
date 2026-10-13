@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { api, ApiError, Profile, Role, Stage } from '../lib/api';
+import { api, ApiError, Profile, Stage } from '../lib/api';
 import { useAuth } from '../lib/auth';
 import { Logo } from './AuthLayout';
 
