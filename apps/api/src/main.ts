@@ -3,6 +3,14 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
+// Em desenvolvimento, lê as configurações de apps/api/.env.
+// Em produção (Docker) não há .env: as variáveis já vêm do ambiente.
+try {
+  process.loadEnvFile();
+} catch {
+  // sem arquivo .env, segue com as variáveis do ambiente
+}
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
