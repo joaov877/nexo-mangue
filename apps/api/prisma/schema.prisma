@@ -3,7 +3,7 @@
 generator client {
   provider        = "prisma-client-js"
   // "client" = Prisma sem o binário Rust (usa o driver adapter do pg). Padrão a partir do Prisma 7.
-  engineType      = "client"
+  engineType = "library"
 }
 
 datasource db {

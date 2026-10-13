@@ -4,11 +4,11 @@
  *
  *   npm run db:seed
  */
-import { PrismaPg } from '@prisma/adapter-pg';
+import 'dotenv/config';
 import { PrismaClient, Role, Stage } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
-const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
+const prisma = new PrismaClient();
 const PASSWORD = 'nexo12345';
 
 async function user(email: string, name: string, role: Role, passwordHash: string) {
