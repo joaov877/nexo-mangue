@@ -16,7 +16,7 @@ export interface Profile {
   ticketMin?: number; ticketMax?: number;
 }
 export interface Connection { id: string; name: string; email?: string; role: Role; receivedAt?: string; connectedAt?: string; }
-export interface RecommendationFilters { kind?: 'MENTOR' | 'INVESTOR'; sector?: string; stage?: Stage; minScore?: number; limit?: number; }
+export interface RecommendationFilters { kind?: 'MENTOR' | 'INVESTOR'; sector?: string; search?: string; stage?: Stage; minScore?: number; limit?: number; }
 
 const TOKEN_KEY = 'nexo.token';
 export const tokenStore = {
@@ -51,6 +51,7 @@ export const api = {
     const params = new URLSearchParams();
     if (filters.kind) params.set('kind', filters.kind);
     if (filters.sector?.trim()) params.set('sector', filters.sector.trim());
+    if (filters.search?.trim()) params.set('search', filters.search.trim());
     if (filters.stage) params.set('stage', filters.stage);
     if (filters.minScore !== undefined) params.set('minScore', String(filters.minScore));
     params.set('limit', String(filters.limit ?? 10));

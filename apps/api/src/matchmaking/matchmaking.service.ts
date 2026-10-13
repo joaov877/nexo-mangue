@@ -7,6 +7,7 @@ export interface RecommendationFilters {
   /** Só para startups: MENTOR ou INVESTOR */
   kind?: 'MENTOR' | 'INVESTOR';
   sector?: string;
+  search?: string;
   /** Só para mentores/investidores: filtra startups por estágio */
   stage?: StageValue;
   minScore?: number;
@@ -49,6 +50,13 @@ const toCounterpart = (p: MentorProfile | InvestorProfile, kind: 'MENTOR' | 'INV
 const toStartup = (p: StartupProfile) => ({ ...p, stage: p.stage as StageValue });
 
 const normalizeSector = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+const matchesSearch = (item: Recommendation, search?: string) => {
+  if (!search?.trim()) return true;
+  const query = normalizeSector(search);
+  const searchable = [item.name, item.title ?? '', item.city, item.state, ...item.sectors,
+    item.description ?? '', item.headline ?? '', item.thesis ?? '', ...(item.expertise ?? []), ...(item.needs ?? [])];
+  return searchable.some((value) => normalizeSector(value).includes(query));
+};
 const hasSector = (sectors: string[], wanted?: string) => {
   if (!wanted?.trim()) return true;
   const query = normalizeSector(wanted);
@@ -81,6 +89,7 @@ export class MatchmakingService {
     }
 
     return items
+      .filter((i) => matchesSearch(i, filters.search))
       .filter((i) => i.score >= minScore)
       .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name))
       .slice(0, limit);

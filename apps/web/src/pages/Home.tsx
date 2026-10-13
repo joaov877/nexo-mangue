@@ -17,7 +17,7 @@ export default function Home() {
   const [contact, setContact] = useState<string | null>(null);
   const [busyId, setBusyId] = useState('');
   const [selectedId, setSelectedId] = useState('');
-  const [filters, setFilters] = useState({ kind: '', sector: '', stage: '', minScore: '0' });
+  const [filters, setFilters] = useState({ kind: '', search: '', sector: '', stage: '', minScore: '0' });
   const selected = items?.find((item) => item.userId === selectedId);
   async function load(next: RecommendationFilters = {}) {
     setItems(null); setNotice(null); setSelectedId('');
@@ -28,11 +28,11 @@ export default function Home() {
   function applyFilters(e: FormEvent) {
     e.preventDefault();
     void load({ kind: filters.kind ? filters.kind as 'MENTOR' | 'INVESTOR' : undefined,
-      sector: filters.sector || undefined, stage: filters.stage ? filters.stage as Stage : undefined,
+      search: filters.search || undefined, sector: filters.sector || undefined, stage: filters.stage ? filters.stage as Stage : undefined,
       minScore: Number(filters.minScore), limit: 20 });
   }
   function resetFilters() {
-    const empty = { kind: '', sector: '', stage: '', minScore: '0' }; setFilters(empty); void load({ limit: 10 });
+    const empty = { kind: '', search: '', sector: '', stage: '', minScore: '0' }; setFilters(empty); void load({ limit: 10 });
   }
   async function interest(r: Recommendation) {
     setBusyId(r.userId); setNotice(null);
@@ -52,6 +52,7 @@ export default function Home() {
     <p className="muted">A nota mede a aderência aos critérios dos perfis — setor, estágio, ticket, localização e impacto — e não a chance de investimento.</p>
     <form className="filter-panel" onSubmit={applyFilters}><div className="filter-title"><div><h2>Refinar recomendações</h2><p className="muted">Combine os critérios para encontrar conexões relevantes.</p></div></div>
       <div className="filter-grid">
+        <label>Buscar perfil<input value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} placeholder="Nome, startup, setor ou cidade" /></label>
         {user?.role === 'STARTUP' && <label>Tipo de perfil<select value={filters.kind} onChange={(e) => setFilters({ ...filters, kind: e.target.value })}><option value="">Todos</option><option value="MENTOR">Mentor</option><option value="INVESTOR">Investidor</option></select></label>}
         <label>Buscar por setor<input value={filters.sector} onChange={(e) => setFilters({ ...filters, sector: e.target.value })} placeholder="Digite parte do setor, ex.: tec" /></label>
         {user?.role !== 'STARTUP' && <label>Estágio da startup<select value={filters.stage} onChange={(e) => setFilters({ ...filters, stage: e.target.value })}><option value="">Todos os estágios</option>{STAGES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}</select></label>}

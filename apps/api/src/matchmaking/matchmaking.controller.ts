@@ -16,6 +16,11 @@ class RecommendationQuery {
   sector?: string;
 
   @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  search?: string;
+
+  @IsOptional()
   @IsIn(STAGE_ORDER)
   stage?: StageValue;
 
