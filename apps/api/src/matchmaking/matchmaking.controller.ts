@@ -1,6 +1,6 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { Type } from 'class-transformer';
-import { IsIn, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsIn, IsInt, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser, CurrentUser } from '../common/current-user';
 import { MatchmakingService } from './matchmaking.service';
