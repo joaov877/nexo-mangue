@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { api, ApiError } from './lib/api';
 import { AuthProvider, useAuth } from './lib/auth';
 import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ProfileSetup from './pages/ProfileSetup';
@@ -40,6 +41,7 @@ createRoot(document.getElementById('root')!).render(
     <Route path="/login" element={<Login />} />
     <Route path="/cadastro" element={<Register />} />
     <Route path="/perfil" element={<Protected><ProfileSetup /></Protected>} />
+    <Route path="/painel" element={<Protected><ProfileGate><Dashboard /></ProfileGate></Protected>} />
     <Route path="/conexoes" element={<Protected><ProfileGate><Connections /></ProfileGate></Protected>} />
     <Route path="/" element={<Protected><ProfileGate><Home /></ProfileGate></Protected>} />
     <Route path="*" element={<Navigate to="/" replace />} />

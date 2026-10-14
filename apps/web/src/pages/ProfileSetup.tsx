@@ -72,7 +72,7 @@ export default function ProfileSetup() {
   </label>;
 
   return <div className="app-shell">
-    <header className="topbar"><Logo /><nav className="main-nav"><Link to="/">Recomendações</Link><Link to="/conexoes">Conexões</Link><span className="nav-current">Meu perfil</span></nav>
+    <header className="topbar"><Logo /><nav className="main-nav"><Link to="/painel">Painel</Link><Link to="/">Recomendações</Link><Link to="/conexoes">Conexões</Link><span className="nav-current">Meu perfil</span></nav>
       <div className="topbar-user"><span>{user?.name}</span><button className="btn-ghost" onClick={signOut}>Sair</button></div>
     </header>
     <main className="content profile-content">

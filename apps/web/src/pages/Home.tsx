@@ -45,7 +45,7 @@ export default function Home() {
     finally { setBusyId(''); }
   }
   return <div className="app-shell"><header className="topbar"><Logo />
-    <nav className="main-nav"><span className="nav-current">Recomendações</span><Link to="/conexoes">Conexões</Link><Link to="/perfil">Meu perfil</Link></nav>
+    <nav className="main-nav"><Link to="/painel">Painel</Link><span className="nav-current">Recomendações</span><Link to="/conexoes">Conexões</Link><Link to="/perfil">Meu perfil</Link></nav>
     <div className="topbar-user"><span>{user?.name} · <span className="muted">{user && ROLE_LABEL[user.role]}</span></span><button className="btn-ghost" onClick={signOut}>Sair</button></div>
   </header>
   <main className="content"><div className="eyebrow">MATCHMAKING EXPLICÁVEL</div><h1>Conexões recomendadas</h1>
