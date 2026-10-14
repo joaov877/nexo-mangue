@@ -19,9 +19,21 @@ export default function Dashboard() {
 
   useEffect(() => {
     let active = true;
-    Promise.all([api.profile(), api.recommendations({ limit: 5 }), api.pendingConnections(), api.mutualConnections()])
-      .then(([profile, recommendations, pending, matches]) => {
-        if (active) setData({ profile, recommendations, pending, matches });
+    Promise.allSettled([api.profile(), api.recommendations({ limit: 5 }), api.pendingConnections(), api.mutualConnections()])
+      .then(([profileResult, recommendationsResult, pendingResult, matchesResult]) => {
+        if (!active) return;
+        if (profileResult.status !== 'fulfilled') {
+          setError(profileResult.reason instanceof Error ? profileResult.reason.message : 'Não foi possível carregar seu perfil.');
+          return;
+        }
+        const failedSections = [recommendationsResult, pendingResult, matchesResult].some((result) => result.status === 'rejected');
+        setError(failedSections ? 'Algumas informações não carregaram. Você ainda pode usar as seções disponíveis; tente atualizar a página.' : '');
+        setData({
+          profile: profileResult.value,
+          recommendations: recommendationsResult.status === 'fulfilled' ? recommendationsResult.value : [],
+          pending: pendingResult.status === 'fulfilled' ? pendingResult.value : [],
+          matches: matchesResult.status === 'fulfilled' ? matchesResult.value : [],
+        });
       })
       .catch((err: Error) => { if (active) setError(err.message || 'Não foi possível carregar o painel.'); })
       .finally(() => { if (active) setLoading(false); });
