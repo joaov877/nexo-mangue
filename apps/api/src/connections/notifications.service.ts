@@ -50,9 +50,10 @@ export class NotificationsService {
     }
 
     const appUrl = (process.env.APP_URL?.trim() || 'http://localhost:5173').replace(/\/$/, '');
-    const escape = (value: string) => value.replace(/[&<>"']/g, (char) => ({
+    const htmlEntities: Record<string, string> = {
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-    })[char] ?? char);
+    };
+    const escape = (value: string) => value.replace(/[&<>"']/g, (char) => htmlEntities[char] ?? char);
     const greeting = escape(input.greeting);
     const body = escape(input.body);
     const title = escape(input.title);
