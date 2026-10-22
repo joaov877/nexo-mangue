@@ -19,7 +19,7 @@ O Nexo Mangue é um MVP em evolução. A nota de compatibilidade ajuda a prioriz
 - Refresh tokens com rotação e revogação de sessões.
 - Limitação de tentativas de login/cadastro adequada a ambientes com múltiplas instâncias.
 - Páginas públicas de detalhes de startups, mentores e investidores.
-- Notificações por e-mail, pipeline de oportunidades, agenda, data room e catálogo de editais.
+- Notificações por e-mail via Resend (opcionais, ativadas por variáveis de ambiente), pipeline de oportunidades, agenda, data room e catálogo de editais.
 - Observabilidade e implantação de produção completas.
 
 ## Stack
@@ -150,5 +150,6 @@ docker-compose.yml          Serviços locais
 - Use um `JWT_SECRET` forte e exclusivo por ambiente.
 - Não use dados de demonstração nem credenciais de desenvolvimento em produção.
 - O MVP usa token JWT de acesso; refresh token com rotação/revogação ainda não está implementado.
+- E-mails transacionais usam Resend quando `RESEND_API_KEY` e `EMAIL_FROM` estão configurados. Sem essas variáveis, a aplicação não envia e-mails. Configure um remetente verificado no provedor e defina `APP_URL` para a URL pública do front-end.
 - Rate limiting de autenticação, política de sessão e endurecimento para produção ainda precisam ser concluídos antes de exposição pública ampla.
 - O score depende da qualidade dos dados informados e deve ser tratado como apoio à decisão.
