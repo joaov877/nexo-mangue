@@ -3,9 +3,10 @@ export type Stage = 'IDEACAO' | 'VALIDACAO' | 'MVP' | 'TRACAO' | 'ESCALA';
 
 export interface User { id: string; name: string; email: string; role: Role; }
 export interface Session { accessToken: string; user: User; }
+export interface MatchCriterion { criterion: 'sector' | 'stage' | 'ticket' | 'location' | 'impact'; label: string; weight: number; fit: number; points: number; reason: string; }
 export interface Recommendation {
   userId: string; name: string; kind: 'STARTUP' | 'MENTOR' | 'INVESTOR'; title: string | null;
-  sectors: string[]; city: string; state: string; score: number; highlights: string[]; interestSent: boolean;
+  sectors: string[]; city: string; state: string; score: number; highlights: string[]; breakdown: MatchCriterion[]; interestSent: boolean;
   description?: string | null; stage?: Stage; ticketNeeded?: number | null; needs?: string[]; impactAreas?: string[];
   headline?: string | null; expertise?: string[]; thesis?: string | null; stages?: Stage[]; ticketMin?: number | null; ticketMax?: number | null;
 }
