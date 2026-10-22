@@ -93,10 +93,38 @@ function intersection(a: string[], b: string[]): string[] {
 
 const brl = (v: number) => `R$ ${v.toLocaleString('pt-BR')}`;
 
+const SECTOR_ALIASES: Record<string, string[]> = {
+  tecnologia: ['tech', 'tecnologia da informacao', 'ti'],
+  saas: ['software as a service', 'software como servico'],
+  fintech: ['tecnologia financeira', 'servicos financeiros'],
+  edtech: ['tecnologia educacional', 'educacao'],
+  healthtech: ['tecnologia em saude', 'saude digital'],
+  agritech: ['tecnologia agricola', 'agrotech'],
+};
+
+function sectorKey(value: string): string {
+  const normalized = norm(value);
+  for (const [canonical, aliases] of Object.entries(SECTOR_ALIASES)) {
+    if (normalized === canonical || aliases.some((alias) => norm(alias) === normalized)) return canonical;
+  }
+  return normalized;
+}
+
 export function scoreSector(startup: StartupInput, other: CounterpartInput) {
-  const shared = intersection(startup.sectors, other.sectors);
+  const startupSectors = startup.sectors.map(sectorKey);
+  const otherSectors = other.sectors.map(sectorKey);
+  const shared = [...new Set(startupSectors.filter((sector) => otherSectors.includes(sector)))];
   if (shared.length > 0) {
-    return { fit: 1, reason: `O setor coincide (${shared.join(', ')})` };
+    return { fit: 1, reason: `Setor compatível (${shared.join(', ')})` };
+  }
+
+  // Correspondência parcial por termos: útil quando os perfis usam rótulos mais específicos.
+  const tokens = (values: string[]) => new Set(values.flatMap((v) => norm(v).split(/[^a-z0-9]+/).filter((t) => t.length >= 4)));
+  const a = tokens(startup.sectors);
+  const b = tokens(other.sectors);
+  const overlap = [...a].filter((token) => b.has(token));
+  if (overlap.length > 0) {
+    return { fit: 0.5, reason: `Correspondência parcial de setor (${overlap.join(', ')})` };
   }
   return { fit: 0, reason: 'Nenhum setor em comum' };
 }
@@ -162,7 +190,18 @@ export function scoreImpact(startup: StartupInput, other: CounterpartInput) {
  * Critérios que não se aplicam (ex.: ticket para mentores) têm o peso redistribuído
  * proporcionalmente entre os demais, para a nota continuar na escala 0–100.
  */
-export function scoreMatch(startup: StartupInput, other: CounterpartInput): MatchScore {
+export type MatchWeights = Record<Criterion, number>;
+
+export function scoreMatch(
+  startup: StartupInput,
+  other: CounterpartInput,
+  weights: MatchWeights = { ...WEIGHTS },
+): MatchScore {
+  const weightValues = Object.values(weights);
+  if (weightValues.some((weight) => !Number.isFinite(weight) || weight < 0) ||
+      weightValues.every((weight) => weight === 0)) {
+    throw new Error('Os pesos do matchmaking devem ser números finitos, não negativos e com pelo menos um peso positivo.');
+  }
   const raw: Record<Criterion, { fit: number; reason: string } | null> = {
     sector: scoreSector(startup, other),
     stage: scoreStage(startup, other),
@@ -172,11 +211,11 @@ export function scoreMatch(startup: StartupInput, other: CounterpartInput): Matc
   };
 
   const applicable = (Object.keys(raw) as Criterion[]).filter((c) => raw[c] !== null);
-  const totalWeight = applicable.reduce((sum, c) => sum + WEIGHTS[c], 0);
+  const totalWeight = applicable.reduce((sum, c) => sum + weights[c], 0);
 
   const breakdown: CriterionResult[] = applicable.map((c) => {
     const r = raw[c]!;
-    const weight = WEIGHTS[c] / totalWeight;
+    const weight = weights[c] / totalWeight;
     return {
       criterion: c,
       label: CRITERION_LABEL[c],
