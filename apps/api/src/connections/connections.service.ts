@@ -39,22 +39,22 @@ export class ConnectionsService {
     await this.audit.log('connection.interest', fromUserId, 'User', toUserId);
 
     const actor = await this.prisma.user.findUnique({ where: { id: fromUserId } });
-    if (!existing && actor) {
-      await this.notifications.interestReceived(target.email, target.name, actor.name);
-    }
 
     const reverse = await this.prisma.connectionInterest.findUnique({
       where: { fromUserId_toUserId: { fromUserId: toUserId, toUserId: fromUserId } },
     });
     if (reverse) {
       await this.audit.log('connection.mutual', fromUserId, 'User', toUserId);
-      if (actor) {
+      if (!existing && actor) {
         await Promise.all([
           this.notifications.mutualConnection(actor.email, actor.name, target.name),
           this.notifications.mutualConnection(target.email, target.name, actor.name),
         ]);
       }
       return { mutual: true, contact: { name: target.name, email: target.email } };
+    }
+    if (!existing && actor) {
+      await this.notifications.interestReceived(target.email, target.name, actor.name);
     }
     return { mutual: false };
   }
