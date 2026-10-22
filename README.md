@@ -1,146 +1,154 @@
- Nexo-mangue
-SaaS de Matchmaking para Startups, Mentores e Investidores Anjo do Nordeste (Porto Digital - Recife/PE) Plataforma web para recomendação explicável de conexões, gestão de mentorias, pitchs e due diligence simplificada.
+# Nexo Mangue
 
-# Plataforma de Matchmaking — Porto Digital
+Plataforma web de matchmaking para aproximar startups, mentores e investidores-anjo, com foco no ecossistema de inovação do Nordeste e do Porto Digital (Recife/PE).
 
-> **Solução SaaS para conexão, descoberta e qualificação de oportunidades entre startups do ecossistema do Porto Digital, investidores anjo do Nordeste e mentores.**
+O Nexo Mangue é um MVP em evolução. A nota de compatibilidade ajuda a priorizar conexões a partir dos dados dos perfis; ela não representa probabilidade de investimento, recomendação financeira nem garantia de elegibilidade.
 
----
+## Estado do MVP
 
-##  Sobre o Projeto
+### Implementado no repositório
+- Cadastro e login com senha armazenada como hash e autenticação por JWT.
+- Perfis próprios para startup, mentor e investidor, com criação/edição.
+- Recomendações com score explicável e filtros.
+- Critérios de setor, estágio, ticket (quando aplicável), localização e impacto.
+- Interesses enviados/recebidos e conexão quando há interesse mútuo.
+- Registro de eventos importantes em log de auditoria.
+- Validação de DTOs, checagem de tipos, testes da API e build no fluxo de CI.
 
-O **Porto Digital** (Recife/PE) é um dos maiores polos de inovação do Brasil, reunindo centenas de startups e empresas de tecnologia. A **Plataforma de Matchmaking** foi concebida para simplificar o processo de aproximação entre empreendedores, mentores e investidores, reduzindo buscas manuais e contatos dispersos.
+### Em evolução / roadmap
+- Refresh tokens com rotação e revogação de sessões.
+- Limitação de tentativas de login/cadastro adequada a ambientes com múltiplas instâncias.
+- Páginas públicas de detalhes de startups, mentores e investidores.
+- Notificações por e-mail, pipeline de oportunidades, agenda, data room e catálogo de editais.
+- Observabilidade e implantação de produção completas.
 
-Utilizando um algoritmo de **score explicável**, o sistema cruza critérios estruturados de perfis (setor, estágio, faixa de ticket, localização e objetivos) e sugere recomendações transparentes para apoiar conexões estratégicas e acelerar etapas de investimento e mentoria.
-
->  **Nota:** O sistema atua como um facilitador de conexões e organização de oportunidades. Ele não realiza decisões automáticas de aporte ou transações financeiras.
-
----
-
-##  Principais Funcionalidades
-
--  **Matchmaking Explicável**: Algoritmo ponderado que calcula a taxa de aderência entre perfis e justifica os motivos da recomendação.
--  **Busca e Filtros Avançados**: Descoberta direcionada por setor, estágio de maturidade, faixas de investimento e competências.
--  **Gestão de Mentorias**: Fluxo para solicitação, aceite/recusa e acompanhamento de mentorias.
--  **Agendamento e Reuniões**: Organização de encontros diretamente pela plataforma.
-- **Central de Documentos & Due Diligence**: Compartilhamento seguro de materiais de pitch, métricas e documentos com controle de acesso granular.
--  **Governança e Auditoria**: Controle de acesso por papéis (RBAC) e logs auditáveis para ações relevantes.
-
----
-
-##  Matriz de Matchmaking (Pesos Propostos para o MVP)
-
-A afinidade entre perfis é estimada através de uma média ponderada baseada em dados estruturados:
-
-| Categoria | Critério Avaliado | Peso Proposto |
-| :--- | :--- | :---: |
-| **Setor** | Áreas de atuação / Tese de investimento | **30%** |
-| **Estágio** | Fase de maturidade da startup (Ideação, MVP, Tração, etc.) | **25%** |
-| **Ticket** | Valor necessário vs. Faixa de investimento do investidor | **20%** |
-| **Localização** | Região e ecossistema de atuação | **15%** |
-| **Objetivos** | Impacto e alinhamento estratégico | **10%** |
-
----
-
-##  Stack Tecnológica
+## Stack
 
 | Camada | Tecnologia |
-| :--- | :--- |
-| **Frontend** | React, TypeScript, Vite |
-| **UI Components** | shadcn/ui ou Mantine |
-| **Backend** | Node.js, NestJS (API REST + OpenAPI) |
-| **Banco de Dados & ORM** | PostgreSQL + Prisma ORM |
-| **Cache & Queue** | Redis |
-| **Armazenamento** | Object Storage (compatível com AWS S3) |
-| **Autenticação** | JWT + Refresh Tokens |
-| **Infraestrutura** | Docker, AWS, GitHub Actions (CI/CD) |
-| **Observabilidade** | Prometheus + Grafana |
+| --- | --- |
+| Frontend | React, TypeScript, Vite |
+| API | Node.js, NestJS |
+| Banco e ORM | PostgreSQL, Prisma |
+| Autenticação atual | JWT de acesso |
+| Infra local | Docker Compose |
+| CI | GitHub Actions |
 
----
+## Requisitos
 
+- Node.js 20 ou superior
+- npm
+- Docker Desktop com Docker Compose
+- Git
 
-##  Como Executar o Projeto Localmente
+## Executar localmente
 
-### Pré-requisitos
-- **Node.js** (v20+)
-- **Docker** e **Docker Compose**
-- **Git**
+1. Clone o repositório e entre na pasta:
 
-### Passo a passo
+   ```bash
+   git clone https://github.com/joaov877/nexo-mangue.git
+   cd nexo-mangue
+   ```
+
+2. Instale as dependências:
+
+   ```bash
+   npm ci
+   ```
+
+3. Crie o arquivo de ambiente da API a partir do exemplo:
+
+   ```bash
+   cp .env.example apps/api/.env
+   ```
+
+   No Windows PowerShell, use `Copy-Item .env.example apps/api/.env`. Confira o arquivo e preencha as variáveis necessárias, especialmente `DATABASE_URL` e `JWT_SECRET`. Não compartilhe segredos nem os envie ao Git.
+
+4. Inicie os serviços de banco de dados:
+
+   ```bash
+   npm run db:up
+   ```
+
+5. Gere o Prisma Client, aplique as migrações e carregue os dados de demonstração:
+
+   ```bash
+   npm run prisma:generate -w apps/api
+   npm run db:migrate
+   npm run db:seed
+   ```
+
+6. Em terminais separados, inicie a API e o front-end:
+
+   ```bash
+   npm run dev:api
+   npm run dev:web
+   ```
+
+   Por padrão, a API fica em `http://localhost:3000/api` e o front-end em `http://localhost:5173`.
+
+> Os comandos de banco dependem das variáveis do ambiente e do PostgreSQL disponível. Consulte `docker-compose.yml` e `.env.example` se a configuração local diferir.
+
+## Comandos de validação
 
 ```bash
-# 1. Instalar as dependências (front-end e API, via npm workspaces)
-npm install
-
-# 2. Subir PostgreSQL e Redis
-npm run db:up
-
-# 3. Configurar o ambiente da API
-cp .env.example apps/api/.env
-
-# 4. Gerar o Prisma Client, criar as tabelas e carregar dados fictícios de exemplo
-npm run prisma:generate -w apps/api
-npm run db:migrate
-npm run db:seed
-
-# 5. Rodar a API (http://localhost:3000/api) e o front-end (http://localhost:5173), em terminais separados
-npm run dev:api
-npm run dev:web
+npm run typecheck
+npm test
+npm run build
 ```
 
-Usuários de demonstração (dados fictícios, senha `nexo12345`): `mare@demo.nexo` (startup), `anjo.fintech@demo.nexo` (investidora), `mentora.vendas@demo.nexo` (mentora).
+O workflow em `.github/workflows/ci.yml` executa instalação reproduzível, geração do Prisma Client, checagem de tipos, testes, build e build da imagem Docker da API.
 
-Para subir também a API em contêiner: `docker compose --profile full up --build`.
+## Fluxos disponíveis
 
-### Comandos úteis
+| Área | Fluxo |
+| --- | --- |
+| Autenticação | `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me` |
+| Perfil | `GET /api/profiles/me`, `PUT /api/profiles/me` |
+| Recomendações | `GET /api/matchmaking/recommendations` |
+| Interesses | `POST /api/connections/:userId/interest`, `DELETE /api/connections/:userId/interest` |
+| Conexões | `GET /api/connections`, `GET /api/connections/pending` |
+| Saúde | `GET /api/health` |
 
-| Comando | O que faz |
-| :--- | :--- |
-| `npm test` | Testes unitários da API (inclui o score de matchmaking) |
-| `npm run typecheck` | Checagem de tipos da API e do front-end |
-| `npm run build` | Build de produção da API e do front-end |
-
----
-
-## Estrutura do Repositório
-
-```
-apps/
-  api/                 API REST (NestJS + Prisma)
-    prisma/            schema, migrations e seed
-    src/auth/          cadastro, login JWT e controle de acesso por perfil
-    src/profiles/      perfis de startup, mentor e investidor
-    src/matchmaking/   score explicável (scoring.ts) + recomendações
-    src/connections/   interesse mútuo e liberação de contato
-    src/audit/         registro das ações importantes
-  web/                 Front-end (React + TypeScript + Vite)
-    src/pages/         Login, Cadastro e Início (recomendações)
-.github/workflows/     CI: tipos, testes, build e imagem Docker
-docker-compose.yml     PostgreSQL, Redis e API
-```
-
-## Endpoints da API (MVP)
-
-| Método | Rota | Descrição |
-| :--- | :--- | :--- |
-| `POST` | `/api/auth/register` | Cadastro (exige consentimento LGPD) |
-| `POST` | `/api/auth/login` | Login, retorna o token JWT |
-| `GET` | `/api/auth/me` | Usuário logado |
-| `GET` / `PUT` | `/api/profiles/me` | Ver / criar ou atualizar o próprio perfil |
-| `GET` | `/api/matchmaking/recommendations` | Recomendações com nota e motivos. Filtros: `kind`, `sector`, `stage`, `minScore`, `limit` |
-| `POST` / `DELETE` | `/api/connections/:userId/interest` | Demonstrar / retirar interesse |
-| `GET` | `/api/connections` | Conexões com interesse mútuo (contato liberado) |
-| `GET` | `/api/connections/pending` | Interesses recebidos ainda sem resposta |
+Consulte os controllers em `apps/api/src` para os parâmetros e formatos atuais das requisições.
 
 ## Como o score funciona
 
-O cálculo fica em `apps/api/src/matchmaking/scoring.ts`, isolado do banco para ser fácil de testar e ajustar os pesos.
+O cálculo é uma função pura em `apps/api/src/matchmaking/scoring.ts`, o que permite testar e ajustar pesos sem acesso ao banco.
 
-- **Setor (30%)**: pelo menos um setor em comum.
-- **Estágio (25%)**: estágio da startup dentro da preferência = 100%; estágio vizinho = 50%.
-- **Ticket (20%)**: valor buscado dentro da faixa do investidor = 100%; até 25% fora = 50%. Não se aplica a mentores.
-- **Localização (15%)**: mesma cidade = 100%; mesmo estado = 70%; ambos no Nordeste = 40%.
-- **Impacto (10%)**: pelo menos uma área de impacto em comum.
+| Critério | Peso padrão | Regra resumida |
+| --- | ---: | --- |
+| Setor | 30% | Setor compatível, incluindo alguns sinônimos conhecidos ou correspondência parcial por termo |
+| Estágio | 25% | Preferência exata vale 100%; estágio vizinho vale 50% |
+| Ticket | 20% | Faixa do investidor; até 25% fora da faixa vale compatibilidade parcial |
+| Localização | 15% | Mesma cidade: 100%; mesmo estado: 70%; Nordeste: 40% |
+| Impacto | 10% | Área de impacto em comum |
 
-Quando um critério não se aplica (ex.: ticket para mentoria), o peso dele é redistribuído entre os demais. A nota mede aderência aos critérios, **não** a chance de investimento.
+Os pesos são configuráveis ao chamar `scoreMatch`; os pesos padrão permanecem os usados pelo produto. Critérios não aplicáveis (por exemplo, ticket para mentores ou quando falta o valor de captação) são retirados do cálculo e seus pesos são redistribuídos proporcionalmente. Pesos inválidos são rejeitados.
 
+A normalização de setores é intencionalmente simples e usa uma lista pequena de sinônimos mais correspondência de termos. Ela não substitui uma taxonomia de setores validada com usuários. A nota é uma medida de aderência aos dados informados, não da chance de investimento.
+
+## Estrutura principal
+
+```text
+apps/
+  api/
+    prisma/                 Schema, migrações e seed
+    src/auth/               Cadastro, login e guarda JWT
+    src/profiles/           Perfis de startup, mentor e investidor
+    src/matchmaking/        Recomendações, score e testes
+    src/connections/        Interesse mútuo
+    src/audit/              Log de auditoria
+  web/
+    src/pages/              Login, cadastro, perfil, painel,
+                            recomendações e conexões
+.github/workflows/          CI de tipos, testes, build e Docker
+docker-compose.yml          Serviços locais
+```
+
+## Segurança e limitações conhecidas
+
+- Use um `JWT_SECRET` forte e exclusivo por ambiente.
+- Não use dados de demonstração nem credenciais de desenvolvimento em produção.
+- O MVP usa token JWT de acesso; refresh token com rotação/revogação ainda não está implementado.
+- Rate limiting de autenticação, política de sessão e endurecimento para produção ainda precisam ser concluídos antes de exposição pública ampla.
+- O score depende da qualidade dos dados informados e deve ser tratado como apoio à decisão.
