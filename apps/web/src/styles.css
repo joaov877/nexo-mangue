@@ -200,3 +200,24 @@ h2 { font-size: 1.18rem; }
 .dashboard-footer { padding-top: 20px; border-top: 1px solid var(--line); margin-top: 40px; color: var(--muted); font-size: .78rem; }
 @media (max-width: 900px) { .dashboard-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } .dashboard-actions, .dashboard-suggestions { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .dashboard-metrics { grid-template-columns: 1fr 1fr; gap: 9px; } .dashboard-metric { padding: 13px; } .dashboard-metric > strong { font-size: 1.45rem; } .dashboard-action { padding: 14px; } }
+
+
+/* Explicação detalhada do score de matchmaking */
+.match-explanation { margin: 22px 0; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); }
+.match-explanation-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.match-explanation-heading h3 { margin: 0 0 6px; font-size: 1.05rem; }
+.match-explanation-heading p { margin: 0; font-size: .84rem; line-height: 1.5; }
+.match-explanation-heading > strong { white-space: nowrap; font-size: 1.2rem; color: var(--brown); }
+.criterion-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+.criterion-item { min-width: 0; padding: 13px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.criterion-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.criterion-top strong { font-size: .9rem; }
+.criterion-top span { text-align: right; color: var(--muted); font-size: .75rem; }
+.criterion-track { height: 6px; margin: 10px 0; overflow: hidden; border-radius: 99px; background: var(--cream); }
+.criterion-track span { display: block; height: 100%; border-radius: inherit; background: var(--amber); }
+.criterion-item p { margin: 0; color: var(--muted); font-size: .82rem; line-height: 1.45; overflow-wrap: anywhere; }
+.match-improvement { margin-top: 14px; padding: 14px; border-radius: 10px; background: var(--cream); }
+.match-improvement > strong { font-size: .9rem; }
+.match-improvement ul { margin: 8px 0; padding-left: 20px; color: var(--ink); font-size: .84rem; line-height: 1.5; }
+.match-improvement small { color: var(--muted); line-height: 1.45; display: block; }
+@media (max-width: 560px) { .criterion-list { grid-template-columns: 1fr; } .match-explanation { padding: 13px; } .criterion-top { align-items: flex-start; flex-direction: column; gap: 4px; } .criterion-top span { text-align: left; } }
