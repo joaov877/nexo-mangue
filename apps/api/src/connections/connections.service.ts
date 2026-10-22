@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { Role } from '@prisma/client';
 import { AuditService } from '../audit/audit.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationsService } from './notifications.service';
 
 /** Startups se conectam com mentores e investidores (e vice-versa). */
 const canConnect = (a: Role, b: Role) =>
@@ -16,6 +17,7 @@ export class ConnectionsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   async expressInterest(fromUserId: string, fromRole: Role, toUserId: string) {
@@ -26,6 +28,9 @@ export class ConnectionsService {
       throw new BadRequestException('Conexões são entre startups e mentores/investidores');
     }
 
+    const existing = await this.prisma.connectionInterest.findUnique({
+      where: { fromUserId_toUserId: { fromUserId, toUserId } },
+    });
     await this.prisma.connectionInterest.upsert({
       where: { fromUserId_toUserId: { fromUserId, toUserId } },
       create: { fromUserId, toUserId },
@@ -33,11 +38,22 @@ export class ConnectionsService {
     });
     await this.audit.log('connection.interest', fromUserId, 'User', toUserId);
 
+    const actor = await this.prisma.user.findUnique({ where: { id: fromUserId } });
+    if (!existing && actor) {
+      await this.notifications.interestReceived(target.email, target.name, actor.name);
+    }
+
     const reverse = await this.prisma.connectionInterest.findUnique({
       where: { fromUserId_toUserId: { fromUserId: toUserId, toUserId: fromUserId } },
     });
     if (reverse) {
       await this.audit.log('connection.mutual', fromUserId, 'User', toUserId);
+      if (actor) {
+        await Promise.all([
+          this.notifications.mutualConnection(actor.email, actor.name, target.name),
+          this.notifications.mutualConnection(target.email, target.name, actor.name),
+        ]);
+      }
       return { mutual: true, contact: { name: target.name, email: target.email } };
     }
     return { mutual: false };
