@@ -30,7 +30,7 @@ describe('scoreMatch', () => {
     const r = scoreMatch(startup, idealInvestor);
     expect(r.score).toBe(100);
     expect(r.breakdown).toHaveLength(5);
-    expect(r.highlights[0]).toContain('O setor coincide');
+    expect(r.highlights[0]).toContain('Setor compatível');
   });
 
   it('dá 0 quando nada coincide', () => {
@@ -123,5 +123,12 @@ describe('scoreMatch', () => {
     expect(() => scoreMatch(startup, idealInvestor, {
       sector: 0, stage: 0, ticket: 0, location: 0, impact: 0,
     })).toThrow('Os pesos do matchmaking');
+  });
+
+  it('rejeita pesos positivos apenas em critérios não aplicáveis', () => {
+    expect(() => scoreMatch(startup, {
+      kind: 'MENTOR', sectors: [], stages: [], city: '', state: 'PE', impactAreas: [],
+    }, { sector: 0, stage: 0, ticket: 1, location: 0, impact: 0 }))
+      .toThrow('Os pesos dos critérios aplicáveis');
   });
 });
