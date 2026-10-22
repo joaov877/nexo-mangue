@@ -73,6 +73,15 @@ export default function Home() {
         {selected.kind === 'MENTOR' && <div><span>Especialidades</span><strong>{selected.expertise?.join(', ') || 'Não informado'}</strong></div>}
         {selected.kind === 'STARTUP' && <div><span>Busca apoio em</span><strong>{selected.needs?.join(', ') || 'Não informado'}</strong></div>}
         <div><span>Áreas de impacto</span><strong>{selected.impactAreas?.join(', ') || 'Não informado'}</strong></div></div>
+      <section className="match-explanation" aria-labelledby="match-explanation-title">
+        <div className="match-explanation-heading"><div><h3 id="match-explanation-title">Como calculamos esta compatibilidade</h3><p className="muted">A nota mostra a aderência aos dados informados. Os pesos são normalizados quando algum critério não se aplica.</p></div><strong>{selected.score}/100</strong></div>
+        <div className="criterion-list">{selected.breakdown.map((item) => <article className="criterion-item" key={item.criterion}>
+          <div className="criterion-top"><strong>{item.label}</strong><span>{Math.round(item.fit * 100)}% de aderência · {item.points.toFixed(1)} pontos</span></div>
+          <div className="criterion-track" aria-label={item.label + ': ' + Math.round(item.fit * 100) + '%'}><span style={{ width: Math.round(item.fit * 100) + '%' }} /></div>
+          <p>{item.reason}</p>
+        </article>)}</div>
+        {selected.breakdown.some((item) => item.fit < 1) && <div className="match-improvement"><strong>O que pode melhorar no perfil</strong><ul>{selected.breakdown.filter((item) => item.fit < 1).map((item) => <li key={item.criterion}>{item.label}: {item.fit === 0 ? 'revise ou detalhe essa informação para entender se há compatibilidade real.' : 'adicione mais contexto para avaliar melhor esse critério.'}</li>)}</ul><small>Essas sugestões são orientações gerais, não garantem aumento da nota nem uma conexão.</small></div>}
+      </section>
       <div className="selected-actions"><span className="selected-score">Compatibilidade: <strong>{selected.score}/100</strong></span><button className="btn btn-small" disabled={selected.interestSent || busyId === selected.userId} onClick={() => void interest(selected)}>{busyId === selected.userId ? 'Enviando…' : selected.interestSent ? 'Interesse enviado' : 'Tenho interesse neste perfil'}</button></div>
     </section>}
     <div className="results-heading"><h2>Perfis para conhecer</h2>{items && <span className="muted">{items.length} resultado(s)</span>}</div>
