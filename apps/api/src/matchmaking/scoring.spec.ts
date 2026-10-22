@@ -100,4 +100,28 @@ describe('scoreMatch', () => {
     expect(r.breakdown.map((b) => b.criterion)).not.toContain('ticket');
     expect(r.score).toBe(100);
   });
+
+  it('reconhece sinônimos conhecidos de setor', () => {
+    const r = scoreMatch(startup, { ...idealInvestor, sectors: ['Tecnologia financeira'] });
+    expect(r.breakdown.find((b) => b.criterion === 'sector')!.fit).toBe(1);
+  });
+
+  it('atribui compatibilidade parcial quando há termo de setor compartilhado', () => {
+    const r = scoreMatch({ ...startup, sectors: ['Saúde digital'] }, { ...idealInvestor, sectors: ['SaaS para saúde digital'] });
+    expect(r.breakdown.find((b) => b.criterion === 'sector')!.fit).toBe(0.5);
+  });
+
+  it('aceita pesos personalizados e normaliza os critérios aplicáveis', () => {
+    const r = scoreMatch(startup, idealInvestor, {
+      sector: 0.5, stage: 0.2, ticket: 0.1, location: 0.1, impact: 0.1,
+    });
+    expect(r.score).toBe(100);
+    expect(r.breakdown.find((b) => b.criterion === 'sector')!.weight).toBeCloseTo(0.5);
+  });
+
+  it('rejeita pesos inválidos', () => {
+    expect(() => scoreMatch(startup, idealInvestor, {
+      sector: 0, stage: 0, ticket: 0, location: 0, impact: 0,
+    })).toThrow('Os pesos do matchmaking');
+  });
 });
