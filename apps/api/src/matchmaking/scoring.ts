@@ -212,6 +212,9 @@ export function scoreMatch(
 
   const applicable = (Object.keys(raw) as Criterion[]).filter((c) => raw[c] !== null);
   const totalWeight = applicable.reduce((sum, c) => sum + weights[c], 0);
+  if (totalWeight <= 0) {
+    throw new Error('Os pesos dos critérios aplicáveis devem somar um valor positivo.');
+  }
 
   const breakdown: CriterionResult[] = applicable.map((c) => {
     const r = raw[c]!;
