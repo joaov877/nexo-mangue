@@ -17,6 +17,9 @@ export interface Profile {
   ticketMin?: number; ticketMax?: number;
 }
 export interface Connection { id: string; name: string; email?: string; role: Role; receivedAt?: string; connectedAt?: string; }
+export type OpportunityStage = 'CONNECTION' | 'FIRST_CONTACT' | 'MEETING' | 'EVALUATION' | 'NEGOTIATION' | 'TERM_SHEET' | 'CLOSED_WON' | 'CLOSED_LOST';
+export interface OpportunityEvent { id: string; actorId: string; fromStage: OpportunityStage | null; toStage: OpportunityStage; note: string | null; createdAt: string; }
+export interface Opportunity { id: string; title: string; description: string | null; stage: OpportunityStage; nextStep: string | null; expectedValue: number | null; targetDate: string | null; creatorId: string; counterpartId: string; creator: { id: string; name: string; role: Role }; counterpart: { id: string; name: string; role: Role }; events: OpportunityEvent[]; createdAt: string; updatedAt: string; }
 export interface RecommendationFilters { kind?: 'MENTOR' | 'INVESTOR'; sector?: string; search?: string; stage?: Stage; minScore?: number; limit?: number; }
 
 const TOKEN_KEY = 'nexo.token';
@@ -61,4 +64,9 @@ export const api = {
   interest: (userId: string) => request<{ mutual: boolean; contact?: { name: string; email: string } }>('/connections/' + userId + '/interest', { method: 'POST' }),
   pendingConnections: () => request<Connection[]>('/connections/pending'),
   mutualConnections: () => request<Connection[]>('/connections'),
+  opportunities: () => request<Opportunity[]>('/opportunities'),
+  createOpportunity: (data: { counterpartId: string; title: string; description?: string; expectedValue?: number; targetDate?: string }) =>
+    request<Opportunity>('/opportunities', { method: 'POST', body: JSON.stringify(data) }),
+  updateOpportunity: (id: string, data: { title?: string; description?: string | null; stage?: OpportunityStage; nextStep?: string | null; expectedValue?: number | null; targetDate?: string | null; note?: string }) =>
+    request<Opportunity>('/opportunities/' + id, { method: 'PATCH', body: JSON.stringify(data) }),
 };
