@@ -27,6 +27,18 @@ enum Stage {
   ESCALA
 }
 
+/// Etapas do acompanhamento de uma oportunidade após conexão mútua.
+enum OpportunityStage {
+  CONNECTION
+  FIRST_CONTACT
+  MEETING
+  EVALUATION
+  NEGOTIATION
+  TERM_SHEET
+  CLOSED_WON
+  CLOSED_LOST
+}
+
 model User {
   id           String   @id @default(uuid())
   email        String   @unique
@@ -45,6 +57,8 @@ model User {
   interestsSent     ConnectionInterest[] @relation("InterestFrom")
   interestsReceived ConnectionInterest[] @relation("InterestTo")
   auditLogs         AuditLog[]
+  opportunitiesCreated   Opportunity[] @relation("OpportunityCreator")
+  opportunitiesReceived  Opportunity[] @relation("OpportunityCounterpart")
 }
 
 model StartupProfile {
@@ -119,4 +133,39 @@ model AuditLog {
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+
+/// Oportunidade privada compartilhada somente pelos dois usuários conectados.
+model Opportunity {
+  id             String           @id @default(uuid())
+  title          String
+  description    String?
+  stage          OpportunityStage @default(CONNECTION)
+  nextStep       String?
+  expectedValue  Int?
+  targetDate     DateTime?
+  creatorId      String
+  counterpartId  String
+  creator        User             @relation("OpportunityCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  counterpart    User             @relation("OpportunityCounterpart", fields: [counterpartId], references: [id], onDelete: Cascade)
+  events         OpportunityEvent[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([creatorId, updatedAt])
+  @@index([counterpartId, updatedAt])
+}
+
+model OpportunityEvent {
+  id            String           @id @default(uuid())
+  opportunityId String
+  opportunity   Opportunity      @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  actorId       String
+  fromStage     OpportunityStage?
+  toStage       OpportunityStage
+  note          String?
+  createdAt     DateTime         @default(now())
+
+  @@index([opportunityId, createdAt])
 }
