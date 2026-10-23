@@ -36,7 +36,7 @@ export default function Connections() {
   }
 
   return <div className="app-shell">
-    <header className="topbar"><Logo /><nav className="main-nav"><Link to="/painel">Painel</Link><Link to="/">Recomendações</Link><span className="nav-current">Conexões</span><Link to="/perfil">Meu perfil</Link></nav>
+    <header className="topbar"><Logo /><nav className="main-nav"><Link to="/painel">Painel</Link><Link to="/">Recomendações</Link><span className="nav-current">Conexões</span><Link to="/oportunidades">Oportunidades</Link><Link to="/perfil">Meu perfil</Link></nav>
       <div className="topbar-user"><span>{user?.name}</span><button className="btn-ghost" onClick={signOut}>Sair</button></div>
     </header>
     <main className="content">
