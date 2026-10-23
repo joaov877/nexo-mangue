@@ -5,6 +5,7 @@ import { ConnectionsModule } from './connections/connections.module';
 import { MatchmakingModule } from './matchmaking/matchmaking.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProfilesModule } from './profiles/profiles.module';
+import { OpportunitiesModule } from './opportunities/opportunities.module';
 
 @Controller('health')
 class HealthController {
