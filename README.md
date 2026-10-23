@@ -12,6 +12,7 @@ O Nexo Mangue é um MVP em evolução. A nota de compatibilidade ajuda a prioriz
 - Recomendações com score explicável e filtros.
 - Critérios de setor, estágio, ticket (quando aplicável), localização e impacto.
 - Interesses enviados/recebidos e conexão quando há interesse mútuo.
+- Pipeline privado de oportunidades para conexões confirmadas, com etapas, próximo passo e histórico de alterações.
 - Registro de eventos importantes em log de auditoria.
 - Validação de DTOs, checagem de tipos, testes da API e build no fluxo de CI.
 
@@ -19,7 +20,7 @@ O Nexo Mangue é um MVP em evolução. A nota de compatibilidade ajuda a prioriz
 - Refresh tokens com rotação e revogação de sessões.
 - Limitação de tentativas de login/cadastro adequada a ambientes com múltiplas instâncias.
 - Páginas públicas de detalhes de startups, mentores e investidores.
-- Notificações por e-mail via Resend (opcionais, ativadas por variáveis de ambiente), pipeline de oportunidades, agenda, data room e catálogo de editais.
+- Notificações por e-mail via Resend (opcionais, ativadas por variáveis de ambiente), agenda, data room e catálogo de editais.
 - Observabilidade e implantação de produção completas.
 
 ## Stack
@@ -107,6 +108,7 @@ O workflow em `.github/workflows/ci.yml` executa instalação reproduzível, ger
 | Recomendações | `GET /api/matchmaking/recommendations` |
 | Interesses | `POST /api/connections/:userId/interest`, `DELETE /api/connections/:userId/interest` |
 | Conexões | `GET /api/connections`, `GET /api/connections/pending` |
+| Oportunidades | `GET /api/opportunities`, `POST /api/opportunities`, `PATCH /api/opportunities/:id` |
 | Saúde | `GET /api/health` |
 
 Consulte os controllers em `apps/api/src` para os parâmetros e formatos atuais das requisições.
@@ -136,7 +138,8 @@ apps/
     src/auth/               Cadastro, login e guarda JWT
     src/profiles/           Perfis de startup, mentor e investidor
     src/matchmaking/        Recomendações, score e testes
-    src/connections/        Interesse mútuo
+    src/connections/        Interesse mútuo e notificações
+    src/opportunities/      Pipeline e histórico de oportunidades
     src/audit/              Log de auditoria
   web/
     src/pages/              Login, cadastro, perfil, painel,
