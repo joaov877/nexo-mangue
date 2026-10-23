@@ -42,7 +42,7 @@ export default function Dashboard() {
 
   return <div className="app-shell">
     <header className="topbar"><Logo />
-      <nav className="main-nav"><span className="nav-current">Painel</span><Link to="/">Recomendações</Link><Link to="/conexoes">Conexões</Link><Link to="/perfil">Meu perfil</Link></nav>
+      <nav className="main-nav"><span className="nav-current">Painel</span><Link to="/">Recomendações</Link><Link to="/conexoes">Conexões</Link><Link to="/oportunidades">Oportunidades</Link><Link to="/perfil">Meu perfil</Link></nav>
       <div className="topbar-user"><span>{user?.name}</span><button className="btn-ghost" onClick={signOut}>Sair</button></div>
     </header>
     <main className="content dashboard-content">
@@ -62,6 +62,7 @@ export default function Dashboard() {
           <div className="dashboard-actions">
             <Link to="/" className="dashboard-action"><span className="dashboard-action-icon">⌕</span><span><strong>Descobrir novas conexões</strong><small>Pesquise perfis e refine seus critérios de compatibilidade.</small></span><span aria-hidden="true">→</span></Link>
             <Link to="/conexoes" className="dashboard-action"><span className="dashboard-action-icon">↗</span><span><strong>Responder a interesses</strong><small>Revise quem demonstrou interesse no seu perfil.</small></span><span aria-hidden="true">→</span></Link>
+            <Link to="/oportunidades" className="dashboard-action"><span className="dashboard-action-icon">↗</span><span><strong>Acompanhar oportunidades</strong><small>Registre próximos passos e acompanhe reuniões e negociações com suas conexões.</small></span><span aria-hidden="true">→</span></Link>
             <Link to="/perfil" className="dashboard-action"><span className="dashboard-action-icon">◎</span><span><strong>Manter o perfil atualizado</strong><small>Informações claras ajudam a encontrar conexões relevantes.</small></span><span aria-hidden="true">→</span></Link>
           </div>
         </section>
