@@ -64,14 +64,22 @@ export class ConnectionsService {
     return { ok: true };
   }
 
-  /** Conexões confirmadas, com contato liberado */
+  /** Conexões confirmadas, com contato liberado. connectedAt é o instante da reciprocidade. */
   async mutual(userId: string) {
-    const sent = await this.prisma.connectionInterest.findMany({ where: { fromUserId: userId }, select: { toUserId: true } });
+    const sent = await this.prisma.connectionInterest.findMany({
+      where: { fromUserId: userId },
+      select: { toUserId: true, createdAt: true },
+    });
+    const sentByUserId = new Map(sent.map((interest) => [interest.toUserId, interest.createdAt]));
     const received = await this.prisma.connectionInterest.findMany({
       where: { toUserId: userId, fromUserId: { in: sent.map((s) => s.toUserId) } },
       include: { from: { select: { id: true, name: true, email: true, role: true } } },
     });
-    return received.map((r) => ({ ...r.from, connectedAt: r.createdAt }));
+    return received.map((r) => {
+      const outgoingCreatedAt = sentByUserId.get(r.fromUserId)!;
+      const connectedAt = outgoingCreatedAt > r.createdAt ? outgoingCreatedAt : r.createdAt;
+      return { ...r.from, connectedAt };
+    });
   }
 
   /** Quem demonstrou interesse em mim e eu ainda não respondi (sem contato) */
