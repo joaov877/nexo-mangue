@@ -61,6 +61,52 @@ model User {
   opportunitiesReceived  Opportunity[] @relation("OpportunityCounterpart")
 }
 
+/// Situação da revisão humana dos dados extraídos de um edital.
+enum CallReviewStatus {
+  PENDING
+  REVIEWED
+  REJECTED
+}
+
+/// Edital público catalogado pelo Radar. Campos não confirmados permanecem nulos.
+model PublicCall {
+  id               String           @id @default(uuid())
+  title            String
+  organization     String?
+  sourceUrl        String           @unique
+  summary          String?
+  sectors          String[]         @default([])
+  eligibleStages   Stage[]          @default([])
+  eligibleRegions  String[]         @default([])
+  fundingMin       Int?
+  fundingMax       Int?
+  applicationDeadline DateTime?
+  requirements     String[]         @default([])
+  reviewStatus     CallReviewStatus @default(PENDING)
+  reviewedAt       DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  recommendations  CallRecommendation[]
+  @@index([reviewStatus, applicationDeadline])
+}
+
+/// Compatibilidade explicável entre um edital e uma startup.
+model CallRecommendation {
+  id                 String       @id @default(uuid())
+  startupId          String
+  publicCallId       String
+  score              Int
+  matchReasons       String[]     @default([])
+  missingInformation String[]     @default([])
+  createdAt          DateTime     @default(now())
+  startup            StartupProfile @relation(fields: [startupId], references: [id], onDelete: Cascade)
+  publicCall         PublicCall   @relation(fields: [publicCallId], references: [id], onDelete: Cascade)
+
+  @@unique([startupId, publicCallId])
+  @@index([startupId, score])
+}
+
 model StartupProfile {
   id           String   @id @default(uuid())
   userId       String   @unique
@@ -77,6 +123,7 @@ model StartupProfile {
   /// O que a startup procura: ex. "mentoria em vendas", "investimento seed"
   needs        String[]
   updatedAt    DateTime @updatedAt
+  callRecommendations CallRecommendation[]
 }
 
 model MentorProfile {
