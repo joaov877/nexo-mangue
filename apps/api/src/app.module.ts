@@ -6,6 +6,7 @@ import { MatchmakingModule } from './matchmaking/matchmaking.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProfilesModule } from './profiles/profiles.module';
 import { OpportunitiesModule } from './opportunities/opportunities.module';
+import { CallsModule } from './calls/calls.module';
 
 @Controller('health')
 class HealthController {
@@ -16,7 +17,7 @@ class HealthController {
 }
 
 @Module({
-  imports: [PrismaModule, AuditModule, AuthModule, ProfilesModule, MatchmakingModule, ConnectionsModule],
+  imports: [PrismaModule, AuditModule, AuthModule, ProfilesModule, MatchmakingModule, ConnectionsModule, OpportunitiesModule, CallsModule],
   controllers: [HealthController],
 })
 export class AppModule {}
