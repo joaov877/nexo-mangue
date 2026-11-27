@@ -22,6 +22,25 @@ export interface OpportunityEvent { id: string; actorId: string; fromStage: Oppo
 export interface Opportunity { id: string; title: string; description: string | null; stage: OpportunityStage; nextStep: string | null; expectedValue: number | null; targetDate: string | null; creatorId: string; counterpartId: string; creator: { id: string; name: string; role: Role }; counterpart: { id: string; name: string; role: Role }; events: OpportunityEvent[]; createdAt: string; updatedAt: string; }
 export interface RecommendationFilters { kind?: 'MENTOR' | 'INVESTOR'; sector?: string; search?: string; stage?: Stage; minScore?: number; limit?: number; }
 
+export interface SuggestedCall {
+  edital: {
+    id: string;
+    title: string;
+    organization: string | null;
+    sourceUrl: string;
+    summary: string | null;
+    sectors: string[];
+    eligibleStages: Stage[];
+    eligibleRegions: string[];
+    fundingMin: number | null;
+    fundingMax: number | null;
+    applicationDeadline: string | null;
+    requirements: string[];
+  };
+  score: number;
+  motivosCompatibilidade: string[];
+  informacoesPendentes: string[];
+}
 const TOKEN_KEY = 'nexo.token';
 export const tokenStore = {
   get: () => { try { return localStorage.getItem(TOKEN_KEY); } catch { return null; } },
@@ -60,7 +79,7 @@ export const api = {
     if (filters.minScore !== undefined) params.set('minScore', String(filters.minScore));
     params.set('limit', String(filters.limit ?? 10));
     return request<Recommendation[]>('/matchmaking/recommendations?' + params.toString());
-  },
+  },suggestedCalls: () => request<SuggestedCall[]>('/startups/me/editais-sugeridos'),
   interest: (userId: string) => request<{ mutual: boolean; contact?: { name: string; email: string } }>('/connections/' + userId + '/interest', { method: 'POST' }),
   pendingConnections: () => request<Connection[]>('/connections/pending'),
   mutualConnections: () => request<Connection[]>('/connections'),

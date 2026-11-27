@@ -9,7 +9,9 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ProfileSetup from './pages/ProfileSetup';
 import Connections from './pages/Connections';
+import Radar from './pages/Radar';
 import Opportunities from './pages/Opportunities';
+
 import './styles.css';
 
 function Protected({ children }: { children: ReactElement }) {
@@ -45,6 +47,7 @@ createRoot(document.getElementById('root')!).render(
     <Route path="/painel" element={<Protected><ProfileGate><Dashboard /></ProfileGate></Protected>} />
     <Route path="/conexoes" element={<Protected><ProfileGate><Connections /></ProfileGate></Protected>} />
     <Route path="/oportunidades" element={<Protected><ProfileGate><Opportunities /></ProfileGate></Protected>} />
+    <Route path="/radar" element={<Protected><ProfileGate><Radar /></ProfileGate></Protected>}/>
     <Route path="/" element={<Protected><ProfileGate><Home /></ProfileGate></Protected>} />
     <Route path="*" element={<Navigate to="/" replace />} />
   </Routes></BrowserRouter></AuthProvider></StrictMode>,

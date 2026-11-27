@@ -42,7 +42,7 @@ export default function Dashboard() {
 
   return <div className="app-shell">
     <header className="topbar"><Logo />
-      <nav className="main-nav"><span className="nav-current">Painel</span><Link to="/">Recomendações</Link><Link to="/conexoes">Conexões</Link><Link to="/oportunidades">Oportunidades</Link><Link to="/perfil">Meu perfil</Link></nav>
+      <nav className="main-nav"><span className="nav-current">Painel</span><Link to="/">Recomendações</Link><Link to="/conexoes">Conexões</Link><Link to="/oportunidades">Oportunidades</Link><Link to="/radar">Radar de editais</Link><Link to="/perfil">Meu perfil</Link></nav>
       <div className="topbar-user"><span>{user?.name}</span><button className="btn-ghost" onClick={signOut}>Sair</button></div>
     </header>
     <main className="content dashboard-content">
