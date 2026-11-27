@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CallReviewStatus } from '@prisma/client';
 import { AuthGuard, Roles } from '../auth/auth.guard';
 import { AnalyzeCallDto } from './dto/analyze-call.dto';
@@ -23,7 +23,7 @@ export class CallAnalysisController {
   @Patch(':id/revisao')
   review(@Param('id') id: string, @Body('status') status: CallReviewStatus) {
     if (![CallReviewStatus.REVIEWED, CallReviewStatus.REJECTED].includes(status)) {
-      throw new (require('@nestjs/common').BadRequestException)('Status deve ser REVIEWED ou REJECTED');
+      throw new BadRequestException('Status deve ser REVIEWED ou REJECTED');
     }
     return this.analysis.review(id, status);
   }
