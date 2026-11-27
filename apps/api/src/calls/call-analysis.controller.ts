@@ -22,7 +22,7 @@ export class CallAnalysisController {
 
   @Patch(':id/revisao')
   review(@Param('id') id: string, @Body('status') status: CallReviewStatus) {
-    if (![CallReviewStatus.REVIEWED, CallReviewStatus.REJECTED].includes(status)) {
+    if (status !== CallReviewStatus.REVIEWED && status !== CallReviewStatus.REJECTED) {
       throw new BadRequestException('Status deve ser REVIEWED ou REJECTED');
     }
     return this.analysis.review(id, status);
